@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  # ---- Next.js Frontend ----
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: voice-clone-web
+    ports:
+      - "3000:3000"
+    environment:
+      - VOICE_SERVICE_URL=http://backend:3030
+      - NODE_ENV=production
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - voice-clone-network
+
+  # ---- FastAPI Voice Service ----
+  backend:
+    build:
+      context: ./mini-services/voice-service
+      dockerfile: ../../Dockerfile.backend
+    container_name: voice-clone-api
+    ports:
+      - "3030:3030"
+    environment:
+      - OPENVOICE_CHECKPOINTS_DIR=/app/checkpoints
+      - VOICE_SERVICE_PORT=3030
+    volumes:
+      - ./checkpoints:/app/checkpoints
+      - audio-uploads:/app/download/audio/uploads
+    restart: unless-stopped
+    networks:
+      - voice-clone-network
+
+volumes:
+  audio-uploads:
+    driver: local
+
+networks:
+  voice-clone-network:
+    driver: bridge

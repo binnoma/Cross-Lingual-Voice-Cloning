@@ -1,0 +1,13 @@
+{
+  "name": "voice-service",
+  "version": "1.0.0",
+  "description": "FastAPI voice cloning service for Cross-Lingual Voice Cloning app",
+  "scripts": {
+    "dev": "python3 -m uvicorn main:app --host 0.0.0.0 --port 3030 --reload",
+    "start": "python3 -m uvicorn main:app --host 0.0.0.0 --port 3030",
+    "health": "curl -s http://localhost:3030/api/health"
+  },
+  "keywords": ["voice-cloning", "tts", "openvoice", "fastapi"],
+  "author": "@binnoma",
+  "license": "MIT"
+}
